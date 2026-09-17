@@ -140,6 +140,9 @@ export interface NumericClaimCheck {
   claimedValue: number;
   actualValue: number;
   matches: boolean;
+  /** Index/length into the ORIGINAL (non-normalized) text passed to checkNumericClaims, for highlighting. */
+  index: number;
+  length: number;
 }
 
 const CLAIM_PATTERN = /([0-9()][0-9+\-*/^().\s]*[0-9)])\s*=\s*(-?[0-9]+(?:\.[0-9]+)?)/g;
@@ -148,6 +151,7 @@ export function checkNumericClaims(text: string, epsilon = 1e-6): NumericClaimCh
   const results: NumericClaimCheck[] = [];
   for (const match of text.matchAll(CLAIM_PATTERN)) {
     const [claimText, expression, claimedStr] = match;
+    if (match.index === undefined) continue;
     try {
       const actualValue = evaluateExpression(expression);
       const claimedValue = parseFloat(claimedStr);
@@ -157,6 +161,8 @@ export function checkNumericClaims(text: string, epsilon = 1e-6): NumericClaimCh
         claimedValue,
         actualValue,
         matches: Math.abs(actualValue - claimedValue) < epsilon,
+        index: match.index,
+        length: claimText.length,
       });
     } catch {
       // not a parseable arithmetic expression (e.g. "n = 5" from prose) — skip it
