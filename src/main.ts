@@ -235,7 +235,7 @@ function render() {
 
       <footer>
         <span>Zero external dependencies for the evaluation engine &middot; every gold verdict is hand-authored</span>
-        <a href="https://github.com" target="_blank" rel="noopener" id="repo-link">Source →</a>
+        <a href="https://github.com/tanmaysaigupta-coder/evalbench" target="_blank" rel="noopener">Source →</a>
       </footer>
     </div>
   `;
